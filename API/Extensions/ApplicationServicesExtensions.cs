@@ -9,37 +9,45 @@ namespace API.Extensions
 {
     public static class ApplicationservicesExtensions
     {
-     public static IServiceCollection AddApplicationservices(this IServiceCollection services, IConfiguration config)
-     {
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-        services.AddDbContext<StoreContext>(opt =>
+        public static IServiceCollection AddApplicationservices(this IServiceCollection services, IConfiguration config)
         {
-            opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
-        });
-        services.AddScoped<IProductRepository, ProductRepository>();
-        services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-        services.Configure<ApiBehaviorOptions>(options =>
-        {
-            options.InvalidModelStateResponseFactory = ActionContext =>
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+            services.AddDbContext<StoreContext>(opt =>
             {
-                var errors = ActionContext.ModelState
-                .Where(e => e.Value.Errors.Count > 0)
-                .SelectMany(x => x. Value.Errors)
-                .Select(x => x.ErrorMessage).ToArray();
-                
-                var errorResponse = new ApiValidationErrorResponse
+                opt.UseSqlite(config.GetConnectionString("DefaultConnection"));
+            });
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = ActionContext =>
                 {
-                    Errors = errors
+                    var errors = ActionContext.ModelState
+                    .Where(e => e.Value.Errors.Count > 0)
+                    .SelectMany(x => x.Value.Errors)
+                    .Select(x => x.ErrorMessage).ToArray();
+
+                    var errorResponse = new ApiValidationErrorResponse
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(errorResponse);
                 };
+            });
 
-                return new BadRequestObjectResult(errorResponse);
-            };
-        });
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
+                });
+            });
 
-        return services;
-     }   
+            return services;
+        }
     }
 }
