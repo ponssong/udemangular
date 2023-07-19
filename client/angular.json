@@ -31,8 +31,10 @@
             ],
             "styles": [
               "src/styles.scss",
+              "node_modules/bootswatch/dist/cerulean/bootstrap.min.css",
               "node_modules/font-awesome/css/font-awesome.min.css",
-              "node_modules/ngx-toastr/toastr.css" 
+              "node_modules/ngx-toastr/toastr.css",
+              "node_modules/ngx-spinner/animations/timer.css"
             ],
             "scripts": []
           },

@@ -526,3 +526,7 @@ API/skinet.db
 API/skinet.db-wal
 API/skinet.db
 API/skinet.db
+client/src/app/home/home.component.scss
+client/angular.json
+client/package-lock.json
+client/package.json

@@ -18,34 +18,28 @@ export class ErrorInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
-      catchError((error: HttpErrorResponse) => 
-      {
-        if (error){
-          if(error.status === 400){
-            if(error.error.errors){
+      catchError((error: HttpErrorResponse) => {
+        if (error) {
+          if (error.status === 400) {
+            if (error.error.errors) {
               throw error.error;
-            } 
-            else {
-              this.toastr.error(error.error.message, error.status.toString());
+            } else {
+              this.toastr.error(error.error.message, error.status.toString())
             }
-            
-          };
-          if(error.status === 401){
-            this.toastr.error(error.error.message, error.status.toString());
-          };
-          if(error.status === 404)
-          {
+          }
+          if (error.status === 401) {
+            this.toastr.error(error.error.message, error.status.toString())
+          }
+          if (error.status === 404) {
             this.router.navigateByUrl('/not-found');
           };
-
-          if(error.status === 500)
-          {
+          if (error.status === 500) {
             const navigationExtras: NavigationExtras = {state: {error: error.error}};
             this.router.navigateByUrl('/server-error', navigationExtras);
-          };
+          }
         }
-        return throwError(() => new Error(error.message));
-      }
-      ));
+        return throwError(() => new Error(error.message))
+      })
+    )
   }
 }
