@@ -8,7 +8,7 @@ namespace API.Dtos
 {
     public class RegisterDto
     {
-         [Required]
+        [Required]
         public string DisplayName { get; set; }
 
         [Required]
