@@ -47,5 +47,21 @@ namespace Infrastructure.Data
         {
             return await ApplySpecification(spec).CountAsync();
         }
+
+        public void Add(T entity)
+        {
+            this.context.Set<T>().Add(entity);
+        }
+
+        public void Update(T entity)
+        {
+            this.context.Set<T>().Attach(entity);
+            this.context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public void Delete(T entity)
+        {
+            this.context.Set<T>().Remove(entity);
+        }
     }
 }
